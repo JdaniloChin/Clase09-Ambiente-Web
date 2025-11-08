@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function cargarUsuarios(){
         console.log("cargarUsuarios");
-        $.get('/api/obtener_usuarios.php', function(data){
+        $.get('./api/obtener_usuarios.php', function(data){
             $('#tablaUsuarios tbody').html(data);
         });
     }
