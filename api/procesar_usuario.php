@@ -30,7 +30,7 @@
                 if(!empty($pass)){
                     $stmt->bind_param('ssssssi', $name,$usuario,$email,$rol,$estado,$pass_hash,$id);
                 }else{
-                   $stmt->bind_param('sssssi', $name,$email,$rol,$estado,$id); 
+                   $stmt->bind_param('sssssi', $name,$usuario,$email,$rol,$estado,$id); 
                 }
                  $stmt->execute();
                  if($stmt->sqlstate == '00000'){
