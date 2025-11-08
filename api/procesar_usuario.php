@@ -58,10 +58,9 @@
                 $stmt->close();
             }    
         }
-        $_SESSION['mensaje'] = $mensaje;
-        $_SESSION['tipo_mensaje'] = $tipo_mensaje;
+        
         $mysqli->close();
-        header("Location: " .$_SERVER['PHP_SELF']);
+       
         exit();
 
    }
@@ -74,7 +73,6 @@
     $stmt->execute();
     $stmt->close();
     $mysqli->close();
-    header("Location: " .$_SERVER['PHP_SELF']);
     exit();
    }
 ?>
