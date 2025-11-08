@@ -40,6 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     });
 
-    
+    function cargarUsuarios(){
+        $.get('/api/obtener_usuarios.php', function(data){
+            $('#tablaUsuarios tbody').html(data);
+        });
+    }
 
 })
