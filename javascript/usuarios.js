@@ -9,44 +9,83 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cargarUsuarios();
 
-    btnsEditar.forEach(btn => {
-        btn.addEventListener('click', function (){
-            const id = this.getAttribute('data-id');
-            const nombre = this.getAttribute('data-nombre');
-            const usuario = this.getAttribute('data-usuario');
-            const correo = this.getAttribute('data-correo');
-            const rol = this.getAttribute('data-rol');
-            const estado = this.getAttribute('data-estado');
+    $(document).on('click', '.btnEditar', function(){
+        const id = $(this).data('id');
+        const nombre = $(this).data('nombre');
+        const usuario = $(this).data('usuario');
+        const correo = $(this).data('correo');
+        const rol = $(this).data('rol');
+        const estado = $(this).data('estado');
 
-            //cambiar titulo del modal
-            modalTitle.textContent = 'Editar Usuario';
+        //cambiar titulo del modal
+        modalTitle.textContent = 'Editar Usuario';
 
-            //precargar los datos del usuario en la tabla al formulario
-            document.getElementById('usuario_id').value = id;
-            document.getElementById('nombre').value = nombre;
-            document.getElementById('usuario').value = usuario;
-            document.getElementById('email').value = correo;
-            document.getElementById('rol').value = rol;
-            document.getElementById('estado').value = estado;
+        //precargar los datos del usuario en la tabla al formulario
+        $('#usuario_id').val(id);
+        $('#nombre').val(nombre);
+        $('#usuario').val(usuario);
+        $('#email').val(correo);
+        $('#rol').val(rol);
+        $('#estado').val(estado);
 
-            //Contraseña por seguridad se queda en blanco
-            document.getElementById('password').value='';
-            document.getElementById('confirm').value= '';
+        //Contraseña por seguridad se queda en blanco
+        $('#password').val('');
+        $('#confirm').val('');
 
-            //Quitar required para edicion
-            passwordInput.removeAttribute('required');
-            confirmInput.removeAttribute('required');
+        //Quitar required para edicion
+        passwordInput.removeAttribute('required');
+        confirmInput.removeAttribute('required');
 
-            modal.show();
+        modal.show();
 
-        })
+    });
+
+    //Limpiar formulario del modal al cerrarlo, para insertar un nuevo usuario
+    $('#modalFormulario').on('hidden.bs.modal', () => {
+        form.reset();
+        $('#usuario_id').val('');
+        modalTitle.textContent = 'Agregar Usuario';
+        passwordInput.setAttribute('required');
+        confirmInput.setAttribute('required');
     });
 
     function cargarUsuarios(){
-        console.log("cargarUsuarios");
         $.get('./api/obtener_usuarios.php', function(data){
             $('#tablaUsuarios tbody').html(data);
         });
     }
+
+    //Guardar usuario /ajax
+    $('#formularioUsuarios').on('submit', function (e) {
+        e.preventDefault();
+
+        const datos = $(this).serialize();
+
+        $.post('./api/procesar_usuario.php', datos, function(respuesta) {
+            const alerta = `<div class="alert alert-info alert-dismissible fade show" role="alert">
+            ${respuesta}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>`;
+
+            $('.modal-body').prepend(alerta);
+
+            setTimeout(() =>{
+                modal.hide();
+                cargarUsuarios();
+            }, 2500);
+        });
+    });
+
+    //eliminar usuario
+    $(document).on('click', '.btnEliminar', function(e){
+        e.preventDefault();
+        if(!confirm('¿Está seguro de eliminar este usuario?')) return;
+        const id = $(this).data('id');
+
+        $.get(`./api/procesar_usuario.php?eliminar=${id}`, function(respuesta){
+            alert(respuesta);
+            cargarUsuarios();
+        });
+    });
 
 })
