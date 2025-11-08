@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const datos = $(this).serialize();
 
         $.post('./api/procesar_usuario.php', datos, function(respuesta) {
+            console.log(respuesta);
             const alerta = `<div class="alert alert-info alert-dismissible fade show" role="alert">
             ${respuesta}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
