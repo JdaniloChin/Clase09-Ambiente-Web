@@ -1,5 +1,5 @@
 <?php
-       require_once("includes/conexion.php"); 
+       require_once("../includes/conexion.php"); 
 
    
    $resultado = $stmt = $mysqli->query("SELECT id_usuario,nombre,usuario,correo,rol,estado FROM usuarios");
