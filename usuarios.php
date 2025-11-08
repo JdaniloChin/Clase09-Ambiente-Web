@@ -4,96 +4,7 @@ if(!isset($_SESSION['nombre_usuario'])){
     header("Location: index.php");
     exit();
 }
-   require_once("includes/conexion.php"); 
 
-   //CRUD usuarios
-
-   if($_SERVER['REQUEST_METHOD'] === 'POST'){
-        $id = $_POST['usuario_id'];
-        $name= $_POST['nombre'];
-        $usuario =  $_POST['usuario'];
-        $email =  $_POST['email'];
-        $pass =  $_POST['password'];
-        $confirm =  $_POST['confirm'];
-        $rol =  $_POST['rol'];
-        $estado =  $_POST['estado'];
-        $mensaje = "";
-        $tipo_mensaje = "";
-
-
-
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-            $mensaje = "Email invalido";
-            $tipo_mensaje = "danger";
-        }elseif($pass !== $confirm){
-            $mensaje = "Contraseñas no coinciden ";
-            $tipo_mensaje = "danger";
-        }else {
-            $pass_hash = password_hash($pass, PASSWORD_DEFAULT);
-
-            if(!empty($id)){
-                //update
-                $sql = "UPDATE usuarios
-                SET nombre = ?, usuario = ?, correo =?, rol=?, estado=?" .
-                (!empty($pass) ? ", clave = ?" : "" ) . "
-                WHERE id_usuario = ?";
-                $stmt = $mysqli->prepare($sql);
-                if(!empty($pass)){
-                    $stmt->bind_param('ssssssi', $name,$usuario,$email,$rol,$estado,$pass_hash,$id);
-                }else{
-                   $stmt->bind_param('sssssi', $name,$email,$rol,$estado,$id); 
-                }
-                 $stmt->execute();
-                 if($stmt->sqlstate == '00000'){
-                    $mensaje = "Usuario actualizado correctamente";
-                    $tipo_mensaje = "success";
-                 }elseif($stmt->sqlstate > 0){
-                    $mensaje = "Advertencia, usuario actualizado con el código de advertencia: " . $stmt->sqlstate;
-                    $tipo_mensaje = "warning";
-                 }else{
-                    $mensaje = "Error, usuario no actualizado, código de error: " . $stmt->sqlstate;
-                    $tipo_mensaje = "danger";
-
-                 }
-                 $stmt->close();
-            }else{
-                //CREATE->INSERT de un usuario
-                $sql = 'INSERT INTO usuarios (nombre, usuario, clave, correo, rol, estado) VALUES (?,?,?,?,?,?)';
-                $stmt = $mysqli->prepare($sql);
-                $stmt->bind_param('ssssss',$name,$usuario,$pass_hash,$email,$rol,$estado);
-                $stmt->execute();
-                if($stmt->sqlstate == '00000'){
-                    $mensaje = "Usuario creado correctamente";
-                    $tipo_mensaje = "success";
-                }elseif($stmt->sqlstate > 0 ){
-                    $mensaje="Advertencia, usuario creado pero dio un mensaje: " . $stmt->sqlstate;
-                    $tipo_mensaje = "warning";
-                }else{
-                    $mensaje = "Error, el usuario no se pudo crear, código de error: " . $stmt->sqlstate;
-                    $tipo_mensaje = "danger";
-                }
-                $stmt->close();
-            }    
-        }
-        $_SESSION['mensaje'] = $mensaje;
-        $_SESSION['tipo_mensaje'] = $tipo_mensaje;
-        $mysqli->close();
-        header("Location: " .$_SERVER['PHP_SELF']);
-        exit();
-
-   }
-
-   if(isset($_GET['eliminar'])){
-    $id = $_GET['eliminar'];
-    $sql= "DELETE FROM usuarios WHERE id_usuario = ?";
-    $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("i",$id);
-    $stmt->execute();
-    $stmt->close();
-    $mysqli->close();
-    header("Location: " .$_SERVER['PHP_SELF']);
-    exit();
-   }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -113,17 +24,6 @@ if(!isset($_SESSION['nombre_usuario'])){
         <div class="row min-vh-100">
             <?php include 'includes/menu.php'; ?>
             <main class="col-md-9 p-4">
-                <?php if(isset($_SESSION['mensaje'])):?>
-                    <div class="alert alert-<?php echo $_SESSION['tipo_mensaje'];?> alert-dismissible fade show" role="alert">
-                        <?php echo htmlspecialchars($_SESSION['mensaje']);?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    <?php
-                        //limpiar variables
-                        unset($_SESSION['mensaje']);
-                        unset($_SESSION['tipo_mensaje']);
-                    endif;
-                 ?>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3>Usuarios del sistema</h3>
                     <button class="btn btn-success mb-3" id="btnAgregar" data-bs-toggle="modal"
