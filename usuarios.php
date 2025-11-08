@@ -8,17 +8,6 @@ if(!isset($_SESSION['nombre_usuario'])){
 
    //CRUD usuarios
 
-   //READ->Select de todos los usuarios
-
-   $usuarios_data = [];
-   $resultado = $stmt = $mysqli->query("SELECT id_usuario,nombre,usuario,correo,rol,estado FROM usuarios");
-   if($resultado && $resultado->num_rows >0){
-    while($row = $resultado->fetch_assoc()){
-        $usuarios_data[] = $row; 
-    }
-   }
-   $stmt->close();
-
    if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $id = $_POST['usuario_id'];
         $name= $_POST['nombre'];
@@ -115,6 +104,7 @@ if(!isset($_SESSION['nombre_usuario'])){
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="./estilos/estilo.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <title>Inicio</title>
 </head>
 
@@ -152,27 +142,6 @@ if(!isset($_SESSION['nombre_usuario'])){
                     </thead>
                     <tbody>
                         <!-- Aquí se agregan los usuarios dinámicamente -->
-                        <?php foreach ($usuarios_data as $usuario): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($usuario['nombre'])  ?></td>
-                            <td><?= htmlspecialchars($usuario['usuario'])  ?></td>
-                            <td><?= htmlspecialchars($usuario['correo'])  ?></td>
-                            <td><?= htmlspecialchars($usuario['rol'])  ?></td>
-                            <td><?= htmlspecialchars($usuario['estado'])  ?></td>
-                            <td>
-                                <a href="#" 
-                                data-id="<?= $usuario['id_usuario']  ?>"
-                                data-nombre="<?= $usuario['nombre']  ?>"
-                                data-usuario="<?= $usuario['usuario']  ?>"
-                                data-correo="<?= $usuario['correo']  ?>"
-                                data-rol="<?= $usuario['rol']  ?>"
-                                data-estado="<?= $usuario['estado']  ?>"
-                                class="btn btn-warning btn-sm btnEditar">Editar</a>
-                                <a href="?eliminar=<?= $usuario['id_usuario'] ?>" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('¿Está seguro de eliminar este usuario?')">Eliminar</a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </main>
