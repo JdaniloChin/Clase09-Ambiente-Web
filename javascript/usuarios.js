@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
         form.reset();
         $('#usuario_id').val('');
         modalTitle.textContent = 'Agregar Usuario';
-        passwordInput.setAttribute('required');
-        confirmInput.setAttribute('required');
+        passwordInput.setAttribute('required','');
+        confirmInput.setAttribute('required','');
     });
 
     function cargarUsuarios(){
