@@ -1,17 +1,13 @@
 <?php
-//Control conexion a la base de datos
-//Activar reporte de errores
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+// includes/conexion.php
+$host = "localhost";
+$user = "root";
+$pass = "";              // XAMPP por defecto
+$db   = "tienda_app";    // BD importada del SQL
 
-    $host = 'localhost';
-    $user = 'root';
-    $pass = 'Jdcc7206.';
-    $database = 'tienda_app';
-
-    $mysqli = new mysqli($host,$user,$pass,$database);
-    if($mysqli->connect_error){
-        echo "<div class='alert alert-danger'>Error en la conexion a la base de datos</div>";
-    }else {
-        $mysqli->set_charset('utf8mb4');
-    }
-?>
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    http_response_code(500);
+    die(json_encode(["error"=>"DB connection failed"]));
+}
+$conn->set_charset("utf8mb4");
